@@ -1,6 +1,4 @@
 #-*-coding:utf-8-*-
-# 2019年10月8日，在经过采用其他经典网络进行实验后，发现效果居然都可以达到85%以上，所以采用将自己的方法与经典方法相结合，看效果能
-# 否有所提升
 import numpy as np
 from keras import backend as K
 from keras.engine import Input, Model
@@ -100,26 +98,6 @@ def unet_model_3d(first_input_shape, nb_classes):
     attention3_dense = Dense(units = 15, activation='relu')(attention3_gpooling)
     branch3 = Lambda(fuse)([attention3_permute, attention3_dense])
 
-    # # label1
-    # label_input1 = Input(shape=(1,))
-    # pchannel_weight1 = Embedding(nb_classes, 15)(label_input1)
-    # conv_permute1 = Permute([4, 2, 3, 1])(first_input)
-    # branch1 = Lambda(fuse)([conv_permute1, pchannel_weight1])
-    #
-    # # label2
-    # label_input2 = Input(shape=(1,))
-    # pchannel_weight2 = Embedding(nb_classes, 15)(label_input2)
-    # conv_layer2 = Conv3D(8, (5, 5, 5), padding='same', activation='relu')(first_input)
-    # conv_permute2 = Permute([4, 2, 3, 1])(conv_layer2)
-    # branch2 = Lambda(fuse)([conv_permute2, pchannel_weight2])
-    #
-    # # label3
-    # label_input3 = Input(shape=(1,))
-    # pchannel_weight3 = Embedding(nb_classes, 15)(label_input3)
-    # conv_layer3 = Conv3D(8, (3, 3, 3), padding='same', activation='relu')(conv_layer2)
-    # conv_permute3 = Permute([4, 2, 3, 1])(conv_layer3)
-    # branch3 = Lambda(fuse)([conv_permute3, pchannel_weight3])
-
     # branch1_weighting
     branch_gpooling1 = MaxPooling2D(strides=4)(branch1)
     branch_flatten1 = Flatten()(branch_gpooling1)
@@ -163,38 +141,10 @@ def unet_model_3d(first_input_shape, nb_classes):
     res_block3_output = Add()([res_block3_conv2,res_block2_pooling])
     res_block3_bnorm2 = BatchNormalization()(res_block3_output)
     res_block3_pooling = MaxPooling2D()(res_block3_bnorm2)
-    # res_block4
-    # res_block4_conv1 = Conv2D(8, (3, 3), padding='same', activation='relu')(res_block3_pooling)
-    # res_block4_bnorm1 = BatchNormalization()(res_block4_conv1)
-    # res_block4_conv2 = Conv2D(8, (3, 3), padding='same', activation='relu')(res_block4_bnorm1)
-    # res_block4_output = Add()([res_block4_conv2,res_block3_pooling])
-    # res_block4_bnorm2 = BatchNormalization()(res_block4_output)
-    # res_block4_pooling = MaxPooling2D()(res_block4_bnorm2)
-    # # res_block5
-    # res_block5_conv1 = Conv2D(8, (3, 3), padding='same', activation='relu')(res_block4_pooling)
-    # res_block5_bnorm1 = BatchNormalization()(res_block5_conv1)
-    # res_block5_conv2 = Conv2D(8, (3, 3), padding='same', activation='relu')(res_block5_bnorm1)
-    # res_block5_output = Add()([res_block5_conv2,res_block4_pooling])
-    # res_block5_bnorm2 = BatchNormalization()(res_block5_output)
-    # res_block5_pooling = MaxPooling2D()(res_block5_bnorm2)
-    # res_block6
-    # res_block6_conv1 = Conv2D(8, (3, 3), padding='same', activation='relu')(res_block5_pooling)
-    # res_block6_bnorm1 = BatchNormalization()(res_block6_conv1)
-    # res_block6_conv2 = Conv2D(8, (3, 3), padding='same', activation='relu')(res_block6_bnorm1)
-    # res_block6_output = Add()([res_block6_conv2,res_block5_pooling])
-    # res_block6_bnorm2 = BatchNormalization()(res_block6_output)
-    # res_block6_pooling = MaxPooling2D()(res_block6_bnorm2)
 
     # flatten
     flatten_feat = Flatten()(res_block3_pooling)
     dense_feat = Dense(units = 256, activation='linear')(flatten_feat)
-
-    # normal stream
-    # base_model = VGG16(weights='imagenet',include_top=False,input_shape=[128,128,3])
-    # second_input = base_model.input
-    # block5_pool_output = base_model.output
-    # flatten = Flatten()(block5_pool_output)
-    # backbone_dense_feat = Dense(256,activation='relu')(flatten)
 
     base_model = ResNet50(weights='imagenet',include_top=False,input_shape=[128,128,3])
     second_input = base_model.input
