@@ -1,5 +1,4 @@
 #-*-coding:utf-8-*-
-# 2019年8月30日，采用的unet22中的网络，重新设计更新的更深的网络
 
 from skimage import transform
 from skimage import io
