@@ -1,5 +1,5 @@
 # MuellerNet
-MuellerNet: a hybrid 3D–2D CNN for cell classification with Mueller matrix images. The used two datasets are available at: https://cloud.tsinghua.edu.cn/d/c1e5a4527b6a478a9812/. 
+MuellerNet: a hybrid 3D–2D CNN for cell classification with Mueller matrix images. The two used datasets are available at: https://cloud.tsinghua.edu.cn/d/c1e5a4527b6a478a9812/. 
 
 If this code or dataset is used, please cite the following paper:
 
